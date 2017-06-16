@@ -13,7 +13,7 @@ define('DB_USER','root');
 define('DB_NAME','actividadesc4');
 define('DB_PASS','especial');
 define('DB_CHARSET','utf-8');
-define('BASE_DIR','actividadesc4');
+define('BASE_DIR','framework');
 define('OFFLINE',1);
 define('DB_USE',1);
 ?>

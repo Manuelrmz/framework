@@ -12,8 +12,7 @@ session_name("servicios");
 Session::initSession();
 try
 {
-	$init = new Bootstrap();
-    $init->run();
+	Bootstrap::run();
 }
 catch(Exception $e)
 {

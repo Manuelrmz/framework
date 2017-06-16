@@ -8,8 +8,11 @@ class principalController extends Controller
 	public function index()
 	{
 		Session::regenerateId();
-		Session::securitySession();
-		$this->_view->renderizar('index','Title');
+		$this->_view->renderizar('index','Titulo Nuevo');
+	}
+	public function login()
+	{
+		
 	}
 }
 ?>
