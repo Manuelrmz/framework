@@ -1,3 +1,2 @@
-<?php
-	echo $this->addScript('view/principal/css/index.css','css');
-?>
+Hola <?php echo $data["name"] ?>
+<div style="color:red;">Prueba</div>

@@ -8,12 +8,11 @@ require_once APP_PATH . 'View.php';
 require_once APP_PATH . 'MysqliBuilder/queryBuilder.php';
 require_once APP_PATH . 'Model.php';
 require_once APP_PATH . 'Session.php';
-session_name("servicios");
+session_name("websystem");
 Session::initSession();
 try
 {
-	$init = new Bootstrap();
-    $init->run();
+	Bootstrap::run();
 }
 catch(Exception $e)
 {

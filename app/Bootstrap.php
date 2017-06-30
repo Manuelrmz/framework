@@ -1,29 +1,26 @@
 <?php
+require_once APP_PATH.'Router.php';
 class Bootstrap
 {
-    private $_router;
-    private $_address;
-    public function run()
+    public static function run()
     {
-        $this->_router = $this->loadClass(APP_PATH,'Router');
-        $this->_router->match();
-        $this->_address = $this->_router->getAddressArray();
-        $this->render($this->_address);
+        Router::match();
+        self::render(Router::getAddressArray());
     }
-    public function render($address)
+    public static function render($address)
     {
-        $controller = $address['controlador'].'Controller';
+        $controller = $address['controller'].'Controller';
         $rutaControlador = CONTROLLER_PATH . $controller . '.php';
-        $metodo = $address['metodo'];
-        $args = $address['argumentos'];
+        $metodo = $address['method'];
+        $args = $address['arguments'];
         if(is_readable($rutaControlador))
         {
             require_once $rutaControlador;
             $controller = new $controller;
             if(is_callable(array($controller, $metodo)))
             {
-                if($this->isAjax() && $address['controlador'] == DEFAULT_ERROR)
-                    echo json_encode(array('ok'=>false,'status'=>'error','msg'=>'Error Procesando la Ruta')); 
+                if(self::checkAjaxRequest() && $address['controller'] == DEFAULT_ERROR)
+                    echo json_encode(array('status'=>false,'msg'=>'Error processing the route')); 
                 else
                 {
                     if(isset($args))
@@ -34,36 +31,21 @@ class Bootstrap
             }
             else
             {
-                if($address['controlador'] == DEFAULT_ERROR)
-                    throw new Exception("Error Controller Method Doesn't Exist", 1);
-                $this->render(array('controlador'=>DEFAULT_ERROR,'metodo'=>'index','argumentos'=>array()));
+                if($address['controller'] == DEFAULT_ERROR)
+                    throw new Exception("Error: Controller's Method Doesn't Exist", 1);
+                self::render(array('controller'=>DEFAULT_ERROR,'method'=>'index','arguments'=>array()));
             }
         }
         else
         {
-            if($address['controlador'] == DEFAULT_ERROR)
-                throw new Exception("Error Controller Doesn't Exist", 1);
-            $this->render(array('controlador'=>DEFAULT_ERROR,'metodo'=>'index','argumentos'=>array())); 
+            if($address['controller'] == DEFAULT_ERROR)
+                throw new Exception("Error: Controller Doesn't Exist", 1);
+            self::render(array('controller'=>DEFAULT_ERROR,'method'=>'index','arguments'=>array())); 
         }
     }
-    public function isAjax()
+    public static function checkAjaxRequest()
     {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-    }
-    public static function loadClass($directorio,$clase)
-    {
-        if(!@include_once $directorio.DS.$clase.'.php')
-        {
-            throw new Exception("Error Loading Class", 1);
-        }
-        return new $clase();
-    }
-    public static function loadInclude($directorio,$clase)
-    {
-        if(!@include_once $directorio.DS.$clase.'.php')
-        {
-            throw new Exception("Error Loading Include", 1);
-        }
     }
 }
 ?>

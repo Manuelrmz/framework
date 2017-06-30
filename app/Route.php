@@ -1,8 +1,9 @@
 <?php
-/*Principal Controller (Could be use for non secure reasons*/
-$this->get('principal');
+/*Principal Controller (Could be use for no secure reasons)*/
+Router::get('principal');
+Router::get('principal/login');
 /*Error Controler (Could be use for customs errors pages*/
-$this->get('error');
-$this->get('error/error403');
-$this->get('error/error404');
+Router::get('error');
+Router::get('error/error403');
+Router::get('error/error404');
 ?>

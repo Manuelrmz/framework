@@ -1,43 +1,41 @@
 <?php
 class View
 {
-    private $_controlador;
-    private $_cuerpo; 
-    private $_pagina;
-    private $_trace;
-    public function renderizar($file,$titulo,$menu = "",$data="")
+    public static function Render($route,array $data = array(), array $template = array())
     {
-        $this->_trace = debug_backtrace();
-        $rutaPlantilla = VIEW_PATH .'layout'.DS.DEFAULT_LAYOUT.'.php';
-        $rutaCuerpo = VIEW_PATH . str_replace("Controller","",$this->_trace[1]["class"]) . DS . $file . '.php';
-        is_readable($rutaPlantilla) or die("Error de Lectura - Plantilla no encontrada");
-        $this->_pagina = $this->cargarModelo($rutaPlantilla);
-        $this->_pagina = $this->replace_content('/\#TITULO\#/ms',$titulo,$this->_pagina);
-        $this->_pagina = $this->replace_content('/\#NAV\#/ms',$menu,$this->_pagina);
-        if(is_readable($rutaCuerpo))
-            $this->_pagina = $this->replace_content('/\#CUERPO\#/ms',$this->_cuerpo = $this->cargarModelo($rutaCuerpo,$data),$this->_pagina);
+        $_route = explode('/',$route);
+        if(sizeof($_route) < 1) throw new Exception("Missing route for the view", 1);
+        if(!is_readable(VIEW_PATH.(isset($_route[1]) ? $_route[0]."/".$_route[1] : $_route[0]).".php")) throw new Exception("Error loading the view file", 1);
+        if(isset($template["route"]))
+        {
+            $_template = explode('/',$template["route"]);
+            if(sizeof($_template) == 2)
+            {
+                if(!is_readable(VIEW_PATH . $_template[0] . "/" . $_template[1]. ".php")) throw new Exception("Error reading the template file", 1);
+                $templateString = self::loadFileasString(VIEW_PATH . $_template[0] . "/" . $_template[1]. ".php");
+                $templateString = preg_replace("/#TITLE#/ms", isset($template["title"]) ? $template["title"] : "" ,$templateString);
+                $templateString = preg_replace("/#BODY#/ms",self::loadFileasString(VIEW_PATH.(isset($_route[1]) ? $_route[0]."/".$_route[1] : $_route[0]).".php",$data),$templateString);
+                echo $templateString;
+            }
+            else
+                throw new Exception("Error loading the template, need more parameters",1);
+        }
         else
-            $this->_pagina = $this->replace_content('/\#CUERPO\#/ms',$this->_cuerpo = "Archivo de Pagina no Encontrada",$this->_pagina);
-        echo $this->_pagina;
+            include_once VIEW_PATH.(isset($_route[1]) ? $_route[0]."/".$_route[1] : $_route[0]).".php";
     }
-    private function replace_content($in='/\#CONTENIDO\#/ms', $out,$pagina)
-    {
-        return preg_replace($in, $out, $pagina);        
-    }
-    private function cargarModelo($ruta,$data = "")
+    private static function loadFileasString($route,array $data = array())
     {
         ob_start();
-        include_once($ruta);
+        include_once($route);
         return ob_get_clean();
     }
-    public function addScript($src,$type)
+    public static function addJavascript($src)
     {
-        $dataReturn = '';
-        if($type=="css")
-            $dataReturn = '<link rel="stylesheet" href="/'.BASE_DIR.'/'.$src.'">';
-        else if($type=="js")
-            $dataReturn = '<script type="text/javascript" charset="utf-8" src="/'.BASE_DIR.'/'.$src.'"></script>';
-        return $dataReturn;
+        echo '<script type="text/javascript" charset="utf-8" src="/'.BASE_DIR.'/'.$src.'"></script>';
+    }
+    public static function addStyle($src)
+    {
+        echo '<link rel="stylesheet" href="/'.BASE_DIR.'/'.$src.'">';
     }
 }
 ?>

@@ -7,9 +7,11 @@ class principalController extends Controller
     }
 	public function index()
 	{
-		Session::regenerateId();
-		Session::securitySession();
-		$this->_view->renderizar('index','Title');
+		View::Render('principal/index',['name'=>'hola prueba'],array('route'=>'layout/index'));
+	}
+	public function login()
+	{
+		
 	}
 }
 ?>
