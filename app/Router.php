@@ -1,4 +1,5 @@
 <?php
+require_once APP_PATH."Route.php";
 class Router
 {
 	private static $routerInstance;

@@ -20,7 +20,7 @@ class Bootstrap
             if(is_callable(array($controller, $metodo)))
             {
                 if(self::checkAjaxRequest() && $address['controller'] == DEFAULT_ERROR)
-                    echo json_encode(array('status'=>false,'msg'=>'Error processing the route')); 
+                echo json_encode(array('status'=>false,'msg'=>'Error processing the route')); 
                 else
                 {
                     if(isset($args))
@@ -32,14 +32,14 @@ class Bootstrap
             else
             {
                 if($address['controller'] == DEFAULT_ERROR)
-                    throw new Exception("Error: Controller's Method Doesn't Exist", 1);
+                throw new Exception("Error: Controller's Method Doesn't Exist", 1);
                 self::render(array('controller'=>DEFAULT_ERROR,'method'=>'index','arguments'=>array()));
             }
         }
         else
         {
             if($address['controller'] == DEFAULT_ERROR)
-                throw new Exception("Error: Controller Doesn't Exist", 1);
+            throw new Exception("Error: Controller Doesn't Exist", 1);
             self::render(array('controller'=>DEFAULT_ERROR,'method'=>'index','arguments'=>array())); 
         }
     }
