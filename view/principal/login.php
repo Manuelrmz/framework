@@ -1,6 +1,3 @@
-<?php
-	echo $this->addScript('view/principal/css/login.css','css');
-?>
 <form action="../usuarios/login" method="POST">
 	<div id="formulario" class="clear">
 		<div class="col-sm-12 text-center bold margin-form">Favor de Iniciar Sesion</div>

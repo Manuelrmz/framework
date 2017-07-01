@@ -7,6 +7,7 @@ class principalController extends Controller
     }
 	public function index()
 	{
+		Authentication::CheckPermission('admin','principal');
 		View::Render('principal/index',['name'=>'hola prueba'],array('route'=>'layout/index'));
 	}
 	public function login()
