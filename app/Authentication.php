@@ -3,6 +3,7 @@ class Authentication
 {
 	public static function CheckPermission($username,$module)
 	{
+		Session::securitySession();
 		$userAuth = self::getAccess($username);
 		if(isset($userAuth[$module]))
 		{
@@ -12,33 +13,46 @@ class Authentication
 		}
 		self::Redirect("error/error403");
 	}
-	public static function Login($username,$password)
+	public static function Login()
 	{
-		$user = self::getAccess($username);
-		if($user)
+		$userFound = false;
+		if(isset($_POST["username"]) && isset($_POST["password"]))
 		{
-			if($user["password"] = $password)
+			$user = users::select(array('users.*','ma.access'))->join(array('moduleaccess','ma'),'users.username','=','ma.username')->where('users.username',$_POST["username"])->get()->fetch_assoc();
+			if($user)
 			{
-				users::where('username',$username)->update(array('lastaccess',date('Y-m-d H:m:s')));
-				$user["lastaccess"] = date('Y-m-d H:m:s';
-				$_SESSION["userdata"] = $user;
-				return true;
+				if($user["access"])
+				{
+					if($user["password"] == $_POST["password"])
+					{
+						users::where('username',$_POST["username"])->update(array('lastaccess'=>date('Y-m-d H:m:s')));
+						$user["lastaccess"] = date('Y-m-d H:m:s');
+						$_SESSION["userdata"] = $user;
+						$userFound = true;
+					}
+				}
 			}
 		}
-		Header('Location: Auth/Login');
+		if($userFound)
+			self::Redirect('principal');
+		else
+		{
+			$_SESSION["loginError"] = "Usuario o contraseña incorrectos";
+			self::Redirect('principal/login');
+		}
 	}
 	public static function Logout($username,$page)
 	{
 		Session::destroySession();
-		Header('Location: '.$page);
+		self::Redirect($page);
+	}
+	public static function Redirect($page)
+	{
+		Header('Location: /'.BASE_DIR.DS.$page);
 	}
 	public static function getAccess($username)
 	{
 		return $userAuth = users::select(array('ma.*'))->join(array('moduleaccess','ma'),'users.username','=','ma.username')->where('users.username',$username)->get()->fetch_assoc();
-	}
-	public static function Redirect($page)
-	{
-		Header('Location: '.$page);
 	}
 }
 ?>

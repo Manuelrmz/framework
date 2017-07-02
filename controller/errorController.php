@@ -13,5 +13,9 @@ class errorController extends Controller
 	{
 		View::Render('error/error403',array(),array('route'=>'layout/index',"Error 403 - Forbidden"));
 	}
+	public function error404()
+	{
+		View::Render('error/error404',array(),array('route'=>'layout/index',"Error 404 - Route don't found"));	
+	}
 }
 ?>

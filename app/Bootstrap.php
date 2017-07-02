@@ -13,34 +13,39 @@ class Bootstrap
         $rutaControlador = CONTROLLER_PATH . $controller . '.php';
         $metodo = $address['method'];
         $args = $address['arguments'];
-        if(is_readable($rutaControlador))
+        if($metodo instanceof \Closure)
+            $metodo();
+        else
         {
-            require_once $rutaControlador;
-            $controller = new $controller;
-            if(is_callable(array($controller, $metodo)))
+            if(is_readable($rutaControlador))
             {
-                if(self::checkAjaxRequest() && $address['controller'] == DEFAULT_ERROR)
-                echo json_encode(array('status'=>false,'msg'=>'Error processing the route')); 
+                require_once $rutaControlador;
+                $controller = new $controller;
+                if(is_callable(array($controller, $metodo)))
+                {
+                    if(self::checkAjaxRequest() && $address['controller'] == DEFAULT_ERROR)
+                        echo json_encode(array('status'=>false,'msg'=>'Error processing the route')); 
+                    else
+                    {
+                        if(isset($args))
+                            call_user_func_array(array($controller, $metodo), $args);
+                        else
+                            call_user_func(array($controller, $metodo));
+                    }
+                }
                 else
                 {
-                    if(isset($args))
-                        call_user_func_array(array($controller, $metodo), $args);
-                    else
-                        call_user_func(array($controller, $metodo));
+                    if($address['controller'] == DEFAULT_ERROR)
+                        throw new Exception("Error: Controller's Method Doesn't Exist", 1);
+                    self::render(array('controller'=>DEFAULT_ERROR,'method'=>'index','arguments'=>array()));
                 }
             }
             else
             {
                 if($address['controller'] == DEFAULT_ERROR)
-                throw new Exception("Error: Controller's Method Doesn't Exist", 1);
-                self::render(array('controller'=>DEFAULT_ERROR,'method'=>'index','arguments'=>array()));
+                    throw new Exception("Error: Controller Doesn't Exist", 1);
+                self::render(array('controller'=>DEFAULT_ERROR,'method'=>'index','arguments'=>array())); 
             }
-        }
-        else
-        {
-            if($address['controller'] == DEFAULT_ERROR)
-            throw new Exception("Error: Controller Doesn't Exist", 1);
-            self::render(array('controller'=>DEFAULT_ERROR,'method'=>'index','arguments'=>array())); 
         }
     }
     public static function checkAjaxRequest()

@@ -35,7 +35,7 @@ class View
     }
     public static function addStyle($src)
     {
-        echo '<link rel="stylesheet" href="/'.BASE_DIR.'/'.$src.'">';
+        echo '<link type="text/css" rel="stylesheet" href="/'.BASE_DIR.'/'.$src.'">';
     }
 }
 ?>

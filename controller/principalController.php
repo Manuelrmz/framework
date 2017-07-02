@@ -12,7 +12,7 @@ class principalController extends Controller
 	}
 	public function login()
 	{
-		
+		View::Render('principal/login');
 	}
 }
 ?>

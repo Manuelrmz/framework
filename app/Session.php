@@ -8,7 +8,7 @@ class Session
 	public static function securitySession()
 	{
 		$codigo_seguridad = sha1($_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR']);
-		if(!isset($_SESSION["userData"]))
+		if(!isset($_SESSION["userdata"]))
 		{
 			session_regenerate_id();
 			$_SESSION = array();
