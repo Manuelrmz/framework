@@ -13,7 +13,7 @@ class Bootstrap
         $rutaControlador = CONTROLLER_PATH . $controller . '.php';
         $metodo = $address['method'];
         $args = $address['arguments'];
-        if($metodo instanceof \Closure)a
+        if($metodo instanceof \Closure)
             $metodo();
         else
         {
