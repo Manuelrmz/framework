@@ -255,8 +255,18 @@ input{line-height: normal;}
   padding: 10px 16px;
   line-height: .5;
 }
-.btn-main{
+.btn-success{
+  color:#fff;
+  background-color: #087f23;
+  border-color: #4caf50;
+}
+.btn-info{
   color:#fff;
   background-color: #428bca;
   border-color: #357ebd;
+}
+.btn-default{
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc
 }
